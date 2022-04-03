@@ -50,12 +50,16 @@ def submit_textarea():
     """
     Endpoint to create a new transaction via our application.
     """
-    post_content = request.form["content"]
+    
+    amount = request.form["amount"]
+    type = request.form["type"]
     author = request.form["author"]
 
     post_object = {
+        
+        'type' : type,
+        'amount': amount,
         'author': author,
-        'content': post_content,
     }
 
     # Submit a transaction
@@ -65,6 +69,7 @@ def submit_textarea():
                   json=post_object,
                   headers={'Content-type': 'application/json'})
 
+    print("new transaction created")
     return redirect('/')
 
 
