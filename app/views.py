@@ -46,6 +46,19 @@ def index():
 
 
 @app.route('/submit', methods=['POST'])
+def submit():
+    
+    funds_avaliable = True
+    if(request.form["transaction"] == "SOLD"):
+        funds_avaliable = check_for_funds()
+    
+    if(funds_avaliable == True):
+        submit_textarea()
+    return redirect('/')
+
+def check_for_funds():
+    return True
+
 def submit_textarea():
     """
     Endpoint to create a new transaction via our application.
@@ -72,7 +85,7 @@ def submit_textarea():
                   headers={'Content-type': 'application/json'})
 
     print("new transaction created")
-    return redirect('/')
+    return 0
 
 
 def timestamp_to_string(epoch_time):
