@@ -4,7 +4,6 @@ import time
 
 from flask import Flask, request
 import requests
-from database import *
 
 
 class Block:
@@ -140,7 +139,6 @@ app = Flask(__name__)
 
 # the node's copy of blockchain
 blockchain = Blockchain()
-database = Database()
 blockchain.create_genesis_block()
 
 # the address to other participating members of the network
