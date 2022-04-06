@@ -5,10 +5,12 @@ import requests
 from flask import render_template, redirect, request
 
 from app import app
+from database import *
 
 # The node with which our application interacts, there can be multiple
 # such nodes as well.
 CONNECTED_NODE_ADDRESS = "http://127.0.0.1:8000"
+DATABASE = Database()
 
 posts = []
 
@@ -47,27 +49,63 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    
-    funds_avaliable = True
-    if(request.form["transaction"] == "SOLD"):
-        funds_avaliable = check_for_funds()
-    
-    if(funds_avaliable == True):
-        submit_textarea()
-    return redirect('/')
-
-def check_for_funds():
-    return True
-
-def submit_textarea():
-    """
-    Endpoint to create a new transaction via our application.
-    """
-    
     amount = request.form["amount"]
     type = request.form["type"]
     author = request.form["author"]
     transaction = request.form["transaction"]
+
+    funds_avaliable = True
+    if(request.form["transaction"] == "SOLD"):
+        funds_avaliable = check_for_funds(type,amount,author)
+    
+    if(funds_avaliable == True):
+        submit_textarea(type,amount,author,transaction)
+        edit_database(type,amount,author,transaction)
+        edit_database(type,amount,"bank",opposite_transaction(transaction))
+        # print(DATABASE)
+    else:
+        print("Transaction Cancelled. Not Enough Funds")
+
+
+    return redirect('/')
+
+def opposite_transaction(transaction):
+    if(transaction == "SOLD"):
+        return "BOUGHT"
+    else:
+        return "SOLD"
+
+def edit_database(type,amount,author,transaction):
+    DATABASE.edit_wallet(type,int(amount),author,transaction)
+    return 0
+
+def check_for_funds(type,amount,author):
+
+    """
+    post_object = {
+        
+        'type' : type,
+        'amount': amount,
+        'author': author,
+    }
+    new_tx_address = "{}/fund_check".format(DATABASE_ADDRESS)
+
+    requests.post(new_tx_address,
+                  json=post_object,
+                  headers={'Content-type': 'application/json'})
+    """
+    
+    if(DATABASE.get_fund(author,type) >= int(amount)):
+        print("Successful Check")
+        return True
+    else:
+        print("Not Enough Funds")
+        return False
+
+def submit_textarea(type,amount,author,transaction):
+    """
+    Endpoint to create a new transaction via our application.
+    """
 
     post_object = {
         
