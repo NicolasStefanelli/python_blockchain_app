@@ -40,8 +40,8 @@ def fetch_posts():
 def index():
     fetch_posts()
     return render_template('index.html',
-                           title='YourNet: Decentralized '
-                                 'content sharing',
+                           title='FruitNet: Decentralized '
+                                 'fruit trading',
                            posts=posts,
                            node_address=CONNECTED_NODE_ADDRESS,
                            readable_time=timestamp_to_string)
@@ -50,69 +50,55 @@ def index():
 @app.route('/submit', methods=['POST'])
 def submit():
     amount = request.form["amount"]
-    type = request.form["type"]
+    sell_fruit = request.form["sell_fruit"]
     author = request.form["author"]
-    transaction = request.form["transaction"]
+    desired_fruit = request.form["desired_fruit"]
 
-    funds_avaliable = True
-    if(request.form["transaction"] == "SOLD"):
-        funds_avaliable = check_for_funds(type,amount,author)
+    funds_avaliable = check_for_funds(sell_fruit,amount,author)
     
     if(funds_avaliable == True):
-        submit_textarea(type,amount,author,transaction)
-        edit_database(type,amount,author,transaction)
-        edit_database(type,amount,"bank",opposite_transaction(transaction))
-        # print(DATABASE)
+        submit_textarea(sell_fruit,amount,author,desired_fruit)
+        
+        #user sell_fruit goes to bank
+        edit_database(sell_fruit,amount,author,"SOLD")
+        edit_database(sell_fruit,amount,"bank","BOUGHT")
+
+        #bank desired_fruit goes to user
+        edit_database(desired_fruit,amount,author,"BOUGHT")
+        edit_database(desired_fruit,amount,"bank","SOLD")
+        
+        print(DATABASE)
     else:
         print("Transaction Cancelled. Not Enough Funds")
 
 
     return redirect('/')
 
-def opposite_transaction(transaction):
-    if(transaction == "SOLD"):
-        return "BOUGHT"
-    else:
-        return "SOLD"
 
-def edit_database(type,amount,author,transaction):
-    DATABASE.edit_wallet(type,int(amount),author,transaction)
+def edit_database(sell_fruit,amount,author,transaction):
+    DATABASE.edit_wallet(sell_fruit,int(amount),author,transaction)
     return 0
 
-def check_for_funds(type,amount,author):
-
-    """
-    post_object = {
-        
-        'type' : type,
-        'amount': amount,
-        'author': author,
-    }
-    new_tx_address = "{}/fund_check".format(DATABASE_ADDRESS)
-
-    requests.post(new_tx_address,
-                  json=post_object,
-                  headers={'Content-type': 'application/json'})
-    """
+def check_for_funds(sell_fruit,amount,author):
     
-    if(DATABASE.get_fund(author,type) >= int(amount)):
+    if(DATABASE.get_fund(author,sell_fruit) >= int(amount)):
         print("Successful Check")
         return True
     else:
         print("Not Enough Funds")
         return False
 
-def submit_textarea(type,amount,author,transaction):
+def submit_textarea(sell_fruit,amount,author,desired_fruit):
     """
     Endpoint to create a new transaction via our application.
     """
 
     post_object = {
         
-        'type' : type,
+        'sell_fruit' : sell_fruit,
         'amount': amount,
         'author': author,
-        'transaction': transaction,
+        'desired_fruit': desired_fruit,
     }
 
     # Submit a transaction
@@ -120,7 +106,7 @@ def submit_textarea(type,amount,author,transaction):
 
     requests.post(new_tx_address,
                   json=post_object,
-                  headers={'Content-type': 'application/json'})
+                  headers={'Content-sell_fruit': 'application/json'})
 
     print("new transaction created")
     return 0

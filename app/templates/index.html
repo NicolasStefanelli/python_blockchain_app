@@ -6,18 +6,11 @@
 
 	<center>
 	<form action="/submit" id="textform" method="post">
-	    
-		<input type="radio" id="buy" name="transaction" value="BOUGHT">
-	<label for="buy">Buy</label><br>
-	<input type="radio" id="sell" name="transaction" value="SOLD">
-	<label for="sell">Sell</label><br>
-	
-	<br> 
-
-	<input type="text" name="type" placeholder="Type of Currency">
-	<input type="text" name="amount" placeholder="Amount of Currency">
-	<input type="text" name="author" placeholder="Your name">
-	<input type="submit" value="Post">
+		<input type="text" name="sell_fruit" placeholder="Fruit To Remove">
+		<input type="text" name="amount" placeholder="Amount To Remove">
+		<input type="text" name="desired_fruit" placeholder="Desired Fruit">
+		<input type="text" name="author" placeholder="Your name">
+		<input type="submit" value="Post">
 	</form>
 	</center>
 
@@ -38,7 +31,7 @@
 	   </div>
 	   <div>
 	      <div class="post_box-body">
-	         <p>{{post.transaction}} {{post.amount}} of {{post.type}}</p>
+	         <p>Traded {{post.amount}} {{post.sell_fruit}} for {{post.amount}} {{post.desired_fruit}}</p>
 	      </div>
 	   </div>
 	</div>
