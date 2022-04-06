@@ -68,8 +68,11 @@ def submit():
         edit_database(desired_fruit,amount,"bank","SOLD")
         
         print(DATABASE)
+
     else:
+
         print("Transaction Cancelled. Not Enough Funds")
+        results = "This transaction was not successful. Please try again."
 
 
     return redirect('/')
