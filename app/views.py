@@ -57,7 +57,8 @@ def submit():
     funds_avaliable = check_for_funds(sell_fruit,amount,author)
     
     if(funds_avaliable == True):
-        submit_textarea(sell_fruit,amount,author,desired_fruit)
+        results = "The transaction was successful."
+        submit_textarea(sell_fruit,amount,author, desired_fruit, results)
         
         #user sell_fruit goes to bank
         edit_database(sell_fruit,amount,author,"SOLD")
@@ -69,8 +70,8 @@ def submit():
         
         print(DATABASE)
     else:
-        print("Transaction Cancelled. Not Enough Funds")
-
+        results = "Transaction Cancelled. Not Enough Funds"
+        submit_textarea(sell_fruit, amount, author, desired_fruit, results)
 
     return redirect('/')
 
@@ -88,7 +89,7 @@ def check_for_funds(sell_fruit,amount,author):
         print("Not Enough Funds")
         return False
 
-def submit_textarea(sell_fruit,amount,author,desired_fruit):
+def submit_textarea(sell_fruit,amount,author,desired_fruit,msg):
     """
     Endpoint to create a new transaction via our application.
     """
@@ -99,6 +100,7 @@ def submit_textarea(sell_fruit,amount,author,desired_fruit):
         'amount': amount,
         'author': author,
         'desired_fruit': desired_fruit,
+        'results': msg,
     }
 
     # Submit a transaction

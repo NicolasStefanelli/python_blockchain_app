@@ -31,7 +31,9 @@
 	   </div>
 	   <div>
 	      <div class="post_box-body">
-	         <p>Traded {{post.amount}} {{post.sell_fruit}} for {{post.amount}} {{post.desired_fruit}}</p>
+	         <p>Traded {{post.amount}} {{post.sell_fruit}} for {{post.amount}} {{post.desired_fruit}}. </p>
+			 <p class="results">{{post.results}}</p>
+
 	      </div>
 	   </div>
 	</div>
@@ -98,6 +100,12 @@
 		    outline: none;
 		    height: 42px;
 		}
+
+		.results{
+			color: red;
+			font-size: 14x;
+		}
+
 	</style>
     </div>
 {% endblock %}

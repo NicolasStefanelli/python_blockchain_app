@@ -151,7 +151,7 @@ peers = set()
 def new_transaction():
     print("New Transaction Detected")
     tx_data = request.get_json()
-    required_fields = ["author", "amount","desired_fruit","sell_fruit"]
+    required_fields = ["author", "amount","desired_fruit","sell_fruit","results"]
     #print("Recieved Required Fields")
     for field in required_fields:
         if not tx_data.get(field):
