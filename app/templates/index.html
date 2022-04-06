@@ -18,6 +18,8 @@
 	<input type="text" name="amount" placeholder="Amount of Currency">
 	<input type="text" name="author" placeholder="Your name">
 	<input type="submit" value="Post">
+	<br>
+	<body class="results">{{post.results}}</body>
 	</form>
 	</center>
 
@@ -105,6 +107,12 @@
 		    outline: none;
 		    height: 42px;
 		}
+
+		.results{
+			color:#f00;
+			font-size: 14px;
+		}
+
 	</style>
     </div>
 {% endblock %}

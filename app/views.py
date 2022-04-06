@@ -53,6 +53,7 @@ def submit():
     type = request.form["type"]
     author = request.form["author"]
     transaction = request.form["transaction"]
+    results = ""
 
     funds_avaliable = True
     if(request.form["transaction"] == "SOLD"):
@@ -62,9 +63,12 @@ def submit():
         submit_textarea(type,amount,author,transaction)
         edit_database(type,amount,author,transaction)
         edit_database(type,amount,"bank",opposite_transaction(transaction))
+        results = "The transaction was successful."
         # print(DATABASE)
     else:
+
         print("Transaction Cancelled. Not Enough Funds")
+        results = "This transaction was not successful. Please try again."
 
 
     return redirect('/')
