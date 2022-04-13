@@ -1,3 +1,8 @@
+"""
+views.py
+
+"""
+
 import datetime
 import json
 
@@ -5,12 +10,12 @@ import requests
 from flask import render_template, redirect, request
 
 from app import app
-from database import *
+from app.database import *
 
 # The node with which our application interacts, there can be multiple
 # such nodes as well.
 CONNECTED_NODE_ADDRESS = "http://127.0.0.1:8000"
-DATABASE = Database()
+DATABASE = Database() # define a database to hold transactions
 
 posts = []
 
@@ -49,13 +54,19 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
+    """
+    Driver function for submit method. Handles the transaction and then posts it to the blockchain.
+    """
+    # Get info from html form
     amount = request.form["amount"]
     sell_fruit = request.form["sell_fruit"]
     author = request.form["author"]
     desired_fruit = request.form["desired_fruit"]
 
+    # check that there are enough funds to complete the transaction
     funds_avaliable = check_for_funds(sell_fruit,amount,author)
     
+    # if there are enough funds, complete the transaction and post it to the blockchain.
     if(funds_avaliable == True):
         results = "The transaction was successful."
         submit_textarea(sell_fruit,amount,author, desired_fruit, results)
@@ -69,6 +80,8 @@ def submit():
         edit_database(desired_fruit,amount,"bank","SOLD")
         
         print(DATABASE)
+    
+    # if there aren't enough funds, post the transaction, but do not move fruits.
     else:
         results = "Transaction Cancelled. Not Enough Funds"
         submit_textarea(sell_fruit, amount, author, desired_fruit, results)
@@ -77,16 +90,16 @@ def submit():
 
 
 def edit_database(sell_fruit,amount,author,transaction):
+    """Edit the database, either adding or removing fruit from the specified "author" """
     DATABASE.edit_wallet(sell_fruit,int(amount),author,transaction)
     return 0
 
 def check_for_funds(sell_fruit,amount,author):
+    """checks to ensure user has enough fruit for transaction to take place"""
     
     if(DATABASE.get_fund(author,sell_fruit) >= int(amount)):
-        print("Successful Check")
         return True
     else:
-        print("Not Enough Funds")
         return False
 
 def submit_textarea(sell_fruit,amount,author,desired_fruit,msg):
@@ -94,6 +107,7 @@ def submit_textarea(sell_fruit,amount,author,desired_fruit,msg):
     Endpoint to create a new transaction via our application.
     """
 
+    # create json object
     post_object = {
         
         'sell_fruit' : sell_fruit,
@@ -105,14 +119,13 @@ def submit_textarea(sell_fruit,amount,author,desired_fruit,msg):
 
     # Submit a transaction
     new_tx_address = "{}/new_transaction".format(CONNECTED_NODE_ADDRESS)
-
     requests.post(new_tx_address,
                   json=post_object,
                   headers={'Content-sell_fruit': 'application/json'})
 
-    print("new transaction created")
     return 0
 
 
 def timestamp_to_string(epoch_time):
+    """Convert timestamp to a string"""
     return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')
