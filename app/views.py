@@ -56,6 +56,7 @@ def index():
 def submit():
     """
     Driver function for submit method. Handles the transaction and then posts it to the blockchain.
+    
     """
     # Get info from html form
     amount = request.form["amount"]

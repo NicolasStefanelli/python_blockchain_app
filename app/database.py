@@ -1,6 +1,6 @@
 class wallet:
     def __init__(self, is_bank=False): 
-        
+        #bank starts with 1000 of each fruit and users start with 300 apples to be exchanged
         if(is_bank == True):
             self.user_wallet =  {"apples" : 1000,"bananas" : 1000,"oranges" : 1000}
         else:
