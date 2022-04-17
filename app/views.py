@@ -64,11 +64,15 @@ def submit():
     author = request.form["author"]
     desired_fruit = request.form["desired_fruit"]
 
+    # error checking
+    vars_list = [amount,sell_fruit,author,desired_fruit]
+    results = error_check(vars_list)
+    print("Line 70: " + results)
     # check that there are enough funds to complete the transaction
-    funds_avaliable = check_for_funds(sell_fruit,amount,author)
+    
     
     # if there are enough funds, complete the transaction and post it to the blockchain.
-    if(funds_avaliable == True):
+    if(results == "NO ERRORS"):
         results = "The transaction was successful."
         submit_textarea(sell_fruit,amount,author, desired_fruit, results)
         
@@ -83,12 +87,35 @@ def submit():
         print(DATABASE)
     
     # if there aren't enough funds, post the transaction, but do not move fruits.
+    elif(results == "Transaction Cancelled. All fields must be filled in."):
+        submit_textarea("NaN","NaN","NaN","NaN",results)
     else:
-        results = "Transaction Cancelled. Not Enough Funds"
         submit_textarea(sell_fruit, amount, author, desired_fruit, results)
 
     return redirect('/')
 
+def error_check(vars_list):
+    
+    fruit_list = DATABASE.get_all_companies()
+    # check that all boxes have value
+    for var in vars_list:
+        if var == "":
+            return "Transaction Cancelled. All fields must be filled in."
+    # check that author is a valid author
+    if(vars_list[2] not in DATABASE.get_users()):
+        return "Transaction Cancelled. Invalid Author."
+    #check that fruits are valid fruits
+    elif(vars_list[1] not in fruit_list or vars_list[3] not in fruit_list):
+        return "Transaction Cancelled. Valid fruits are 'apples', 'bananas', or 'oranges'."
+    #check that amount is a number
+    elif(type(vars_list[0] != int)):
+        return "Transaction Cancelled. Please enter a valid integer amount."
+    
+    # check for valid funds
+    funds_avaliable = check_for_funds(vars_list[1],vars_list[0],vars_list[2])
+    if(funds_avaliable == False):
+        return "Transaction Cancelled. Not enough funds."
+    return "NO ERRORS"
 
 def edit_database(sell_fruit,amount,author,transaction):
     """Edit the database, either adding or removing fruit from the specified "author" """

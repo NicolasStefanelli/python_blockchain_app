@@ -23,6 +23,9 @@ class Database:
     def __init__(self):
         self.wallets = {'nick': wallet(),'rylee' : wallet(), 'peyton' : wallet(), 'bank':wallet(True)}
     
+    def get_users(self):
+        return self.wallets.keys()
+    
     def add_new_user(self,username):
         self.wallets[username] = wallet()
     
@@ -35,6 +38,9 @@ class Database:
         elif(transaction == "BOUGHT"):
             self.wallets[author].add_funds(type,amount)
     
+    def get_all_companies(self):
+        return self.wallets['bank'].return_companies()
+        
     def __str__(self):
         return_str = ""
         return_str += "\n----------------\n"
