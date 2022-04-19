@@ -107,9 +107,11 @@ def error_check(vars_list):
     #check that fruits are valid fruits
     elif(vars_list[1] not in fruit_list or vars_list[3] not in fruit_list):
         return "Transaction Cancelled. Valid fruits are 'apples', 'bananas', or 'oranges'."
+    
     #check that amount is a number
-    elif(type(vars_list[0] != int)):
-        return "Transaction Cancelled. Please enter a valid integer amount."
+    for char in vars_list[0]:
+        if(char not in "0123456789"):
+            return "Transaction Cancelled. Please enter a valid integer amount."
     
     # check for valid funds
     funds_avaliable = check_for_funds(vars_list[1],vars_list[0],vars_list[2])

@@ -44,7 +44,7 @@ class Database:
     def __str__(self):
         return_str = ""
         return_str += "\n----------------\n"
-        return_str += "Current Databse standings:\n"
+        return_str += "Current Database standings:\n"
         for user in self.wallets.keys():
             return_str += user + "\n"
             user_wallet = self.wallets[user]
